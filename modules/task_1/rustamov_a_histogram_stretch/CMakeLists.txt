@@ -4,6 +4,9 @@ if ( USE_SEQ )
     set(ProjectId "${ProjectId}_seq")
     project( ${ProjectId} )
     message( STATUS "-- " ${ProjectId} )
+	
+	find_package( OpenCV REQUIRED )
+	include_directories( ${OpenCV_INCLUDE_DIRS} )
 
     file(GLOB_RECURSE ALL_SOURCE_FILES *.cpp *.h)
 
@@ -14,6 +17,7 @@ if ( USE_SEQ )
 
     target_link_libraries(${ProjectId} ${PACK_LIB})
     target_link_libraries(${ProjectId} gtest gtest_main)
+	target_link_libraries(${ProjectId} ${OpenCV_LIBS})
 
     enable_testing()
     add_test(NAME ${ProjectId} COMMAND ${ProjectId})

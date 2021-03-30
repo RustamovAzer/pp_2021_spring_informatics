@@ -5,7 +5,6 @@
 #include "../../../modules/task_1/rustamov_a_histogram_stretch/histogram_stretch.h"
 
 
-
 Matrix generate_random_image(int w, int h, int min_y, int max_y) {
     if ((w <= 0) || (h <= 0) || (min_y < 0) || (max_y < 0) ||
         (min_y > 255) || (max_y > 255)) {
@@ -91,3 +90,4 @@ Matrix histogram_sretch_algorithm(const Matrix& image, const int w, const int h)
     max_y = get_max_y(histogram);
     return increase_contrast(image, w, h, min_y, max_y);
 }
+
