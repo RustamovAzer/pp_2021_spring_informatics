@@ -2,7 +2,7 @@
 
 #include <random>
 #include <iostream>
-#include "../../../modules/task_1/rustamov_a_histogram_stretch/histogram_stretch.h"
+#include "../../../modules/task_2/rustamov_a_histogram_stretch/histogram_stretch.h"
 
 
 
