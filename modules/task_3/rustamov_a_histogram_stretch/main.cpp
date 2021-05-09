@@ -90,10 +90,10 @@ TEST(Histogram_Stretch, Correct_Stretching_10x10) {
 TEST(Histogram_Stretch, Correct_Stretching_500x500) {
     int w = 500, h = 500;
     Matrix image = generate_random_image(w, h);
-    Matrix result_seq - histogram_sretch_algorithm(image, w, h);
+    Matrix result_seq = histogram_sretch_algorithm(image, w, h);
     Matrix result_tbb = histogram_sretch_algorithm_tbb(image, w, h);
     for (int i = 0; i < h * w; i++) {
-        ASSERT_EQ(result[i], exp_result[i]);
+        ASSERT_EQ(result_seq[i], result_tbb[i]);
     }
 }
 
