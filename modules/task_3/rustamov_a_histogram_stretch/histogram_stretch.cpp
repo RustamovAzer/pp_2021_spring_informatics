@@ -52,7 +52,6 @@ Matrix make_histogram(const Matrix& image, int w, int h) {
     return histogram;
 }
 
-
 Matrix make_histogram_tbb(const Matrix& image, int w, int h) {
     if ((w <= 0) || (h <= 0))
         throw std::runtime_error("Incorrect input for 'make_histogram_tbb'");
@@ -65,17 +64,14 @@ Matrix make_histogram_tbb(const Matrix& image, int w, int h) {
         for (size_t i = range.begin(); i < range.end(); ++i) {
             histogram_local[image[i]]++;
         }
-        for (size_t i = 0; i < 256; i++)
-        {
+        for (size_t i = 0; i < 256; i++) {
             countMutex.lock();
             histogram[i] += histogram_local[i];
             countMutex.unlock();
         }
-        
     });
     return histogram;
 }
-
 
 int get_min_y(const Matrix& histogram) {
     int min_y = -1;
@@ -139,7 +135,6 @@ int better_get_min_y_tbb(const Matrix& image, const int& h, const int& w) {
     return min_y;
 }
 
-
 Matrix stretch_histogram(const Matrix& histogram, const int& min_y, const int& max_y) {
     if (min_y >= max_y)
         throw std::runtime_error("Cannot stretch histohram with provided min_y and max_y");
@@ -164,6 +159,7 @@ Matrix increase_contrast(const Matrix& image, int w, int h, const int& min_y, co
     }
     return result_image;
 }
+
 Matrix increase_contrast_tbb(const Matrix& image, int w, int h, const int& min_y, const int& max_y) {
     if ((w <= 0) || (h <= 0))
         throw std::runtime_error("Incorrect input for 'increase_contrast'");
@@ -171,7 +167,7 @@ Matrix increase_contrast_tbb(const Matrix& image, int w, int h, const int& min_y
         throw std::runtime_error("Cannot stretch histohram with provided min_y and max_y");
     int size = h * w;
     Matrix result_image(size);
-    
+
     tbb::parallel_for(tbb::blocked_range<int>(0, size),
                         [&image, &min_y, &max_y, &result_image](tbb::blocked_range<int> range) {
         for (size_t i = range.begin(); i < range.end(); ++i) {
@@ -180,6 +176,7 @@ Matrix increase_contrast_tbb(const Matrix& image, int w, int h, const int& min_y
     });
     return result_image;
 }
+
 Matrix histogram_sretch_algorithm(const Matrix& image, const int w, const int h) {
     if ((w <= 0) || (h <= 0))
         throw std::runtime_error("Incorrect input for 'make_histogram'");

@@ -1,7 +1,7 @@
 // Copyright 2021 Rustamov Azer
 
-#ifndef MODULES_TASK_2_RUSTAMOV_A_HISTOGRAM_STRETCH_HISTOGRAM_STRETCH_H_
-#define MODULES_TASK_2_RUSTAMOV_A_HISTOGRAM_STRETCH_HISTOGRAM_STRETCH_H_
+#ifndef MODULES_TASK_3_RUSTAMOV_A_HISTOGRAM_STRETCH_HISTOGRAM_STRETCH_H_
+#define MODULES_TASK_3_RUSTAMOV_A_HISTOGRAM_STRETCH_HISTOGRAM_STRETCH_H_
 
 #include <tbb/blocked_range.h>
 #include <tbb/parallel_for.h>
@@ -28,4 +28,4 @@ Matrix increase_contrast_tbb(const Matrix& image, int w, int h, const int& min_y
 Matrix histogram_sretch_algorithm(const Matrix& image, const int w, const int h);
 Matrix histogram_sretch_algorithm_tbb(const Matrix& image, const int w, const int h);
 
-#endif  // MODULES_TASK_2_RUSTAMOV_A_HISTOGRAM_STRETCH_HISTOGRAM_STRETCH_H_
+#endif  // MODULES_TASK_3_RUSTAMOV_A_HISTOGRAM_STRETCH_HISTOGRAM_STRETCH_H_
