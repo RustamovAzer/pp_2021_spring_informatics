@@ -33,7 +33,7 @@ Matrix generate_random_image_tbb(int w, int h, int min_y, int max_y) {
     Matrix image(size);
     tbb::parallel_for(tbb::blocked_range<int>(0, size),
                         [&](tbb::blocked_range<int> range) {
-        for (size_t i = range.begin(); i < range.end(); ++i) {
+        for (auto i = range.begin(); i < range.end(); ++i) {
             image[i] = static_cast<int>(rnd(mersenne));
         }
     });
@@ -61,7 +61,7 @@ Matrix make_histogram_tbb(const Matrix& image, int w, int h) {
     tbb::parallel_for(tbb::blocked_range<int>(0, size),
                         [&](tbb::blocked_range<int> range) {
         Matrix histogram_local(256, 0);
-        for (size_t i = range.begin(); i < range.end(); ++i) {
+        for (auto i = range.begin(); i < range.end(); ++i) {
             histogram_local[image[i]]++;
         }
         for (size_t i = 0; i < 256; i++) {
@@ -102,7 +102,7 @@ int better_get_max_y_tbb(const Matrix& image, const int& h, const int& w) {
 
     tbb::parallel_for(tbb::blocked_range<int>(0, size),
                     [&](tbb::blocked_range<int> range) {
-        for (size_t i = range.begin(); i < range.end(); ++i) {
+        for (auto i = range.begin(); i < range.end(); ++i) {
             if (max_y < image[i]) {
                 countMutex.lock();
                 if (max_y < image[i]) {
@@ -122,7 +122,7 @@ int better_get_min_y_tbb(const Matrix& image, const int& h, const int& w) {
 
     tbb::parallel_for(tbb::blocked_range<int>(0, size),
                     [&](tbb::blocked_range<int> range) {
-        for (size_t i = range.begin(); i < range.end(); ++i) {
+        for (auto i = range.begin(); i < range.end(); ++i) {
             if (min_y > image[i]) {
                 countMutex.lock();
                 if (min_y > image[i]) {
@@ -170,7 +170,7 @@ Matrix increase_contrast_tbb(const Matrix& image, int w, int h, const int& min_y
 
     tbb::parallel_for(tbb::blocked_range<int>(0, size),
                         [&image, &min_y, &max_y, &result_image](tbb::blocked_range<int> range) {
-        for (size_t i = range.begin(); i < range.end(); ++i) {
+        for (auto i = range.begin(); i < range.end(); ++i) {
             result_image[i] = 255 * (image[i] - min_y) / (max_y - min_y);
         }
     });
