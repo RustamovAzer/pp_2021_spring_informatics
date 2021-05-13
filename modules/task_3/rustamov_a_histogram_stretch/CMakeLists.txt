@@ -5,6 +5,9 @@ if ( USE_TBB )
     project( ${ProjectId} )
     message( STATUS "-- " ${ProjectId} )
 
+    find_package( OpenCV REQUIRED )
+	include_directories( ${OpenCV_INCLUDE_DIRS} )
+
     file(GLOB_RECURSE ALL_SOURCE_FILES *.cpp *.h)
 
     set(PACK_LIB "${ProjectId}_lib")
@@ -19,6 +22,7 @@ if ( USE_TBB )
         target_link_libraries(${ProjectId} ${TBB_LIBRARIES})
     endif( WIN32 )
     target_link_libraries(${ProjectId} gtest gtest_main)
+    target_link_libraries(${ProjectId} ${OpenCV_LIBS})
 
     enable_testing()
     add_test(NAME ${ProjectId} COMMAND ${ProjectId})

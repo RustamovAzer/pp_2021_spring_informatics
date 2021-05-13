@@ -15,7 +15,7 @@ Matrix generate_random_image(int w, int h, int min_y, int max_y) {
     Matrix image(h * w);
     for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
-            image[i * w + j] = static_cast<int>(rnd(mersenne));
+            image[i * w + j] = static_cast<unsigned char>(rnd(mersenne));
         }
     }
     return image;
@@ -34,7 +34,7 @@ Matrix generate_random_image_tbb(int w, int h, int min_y, int max_y) {
     tbb::parallel_for(tbb::blocked_range<int>(0, size),
                         [&](tbb::blocked_range<int> range) {
         for (auto i = range.begin(); i < range.end(); ++i) {
-            image[i] = static_cast<int>(rnd(mersenne));
+            image[i] = static_cast<unsigned char>(rnd(mersenne));
         }
     });
     return image;

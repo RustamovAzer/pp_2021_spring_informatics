@@ -1,12 +1,111 @@
 // Copyright 2021 Rustamov Azer
 
 #include <gtest/gtest.h>
+#include <iostream>
 #include <tbb/tick_count.h>
 
-#include <random>
-#include <iostream>
+#include "opencv2/core/core.hpp"
+#include "opencv2/opencv.hpp"
+#include "opencv2/highgui/highgui.hpp"
+
 #include "../../../modules/task_3/rustamov_a_histogram_stretch/histogram_stretch.h"
 
+using namespace cv;
+
+TEST(Histogram_Stretch, Show_Stretch_Algorithm) {
+    int w = 10000, h = 1000;
+    tbb::tick_count time_start = tbb::tick_count::now();
+
+    Matrix image = generate_random_image_tbb(w, h, 10, 100);
+    tbb::tick_count time_generate_image = tbb::tick_count::now();
+
+    Matrix histogram = make_histogram_tbb(image, w, h);
+
+    Mat img = Mat(h, w, CV_8UC1);
+    memcpy(img.data, image.data(), image.size()*sizeof(unsigned char));
+    namedWindow("generated_image", WINDOW_AUTOSIZE);
+    imshow("generated_image", img);
+    waitKey(0);
+
+    Mat3b hist_image = Mat3b::zeros(256, 256);
+    for(int b = 0; b < 256; b++) {
+        cv::line
+            ( hist_image
+            , cv::Point(b, 256 - histogram[b]), cv::Point(b, 256)
+            , cv::Scalar::all(255)
+            );
+    }
+    cv::imshow("input_histogram", hist_image);
+    waitKey(0);
+    tbb::tick_count time_start_alg_seq = tbb::tick_count::now();
+
+    Matrix result_seq = histogram_sretch_algorithm(image, w, h);
+    tbb::tick_count time_finish_alg_seq = tbb::tick_count::now();
+
+    Matrix hist_res_seq = make_histogram(result_seq, w, h);
+    tbb::tick_count time_make_hist_seq = tbb::tick_count::now();
+
+    Mat res_seq_img = Mat(img.rows, img.cols, CV_8UC1);
+    memcpy(res_seq_img.data, result_seq.data(), result_seq.size()*sizeof(unsigned char));
+    namedWindow("result_image_seq", WINDOW_AUTOSIZE);
+    imshow("result_image_seq", res_seq_img);
+    waitKey(0);
+
+
+    Mat3b res_hist_seq_image = Mat3b::zeros(256, 256);
+    for(int b = 0; b < 256; b++) {
+        cv::line
+            ( res_hist_seq_image
+            , cv::Point(b, 256 - hist_res_seq[b]), cv::Point(b, 256)
+            , cv::Scalar::all(255)
+            );
+    }
+    cv::imshow("stretched_histogram_seq", res_hist_seq_image);
+    waitKey(0);
+    tbb::tick_count time_start_alg_tbb = tbb::tick_count::now();
+
+    Matrix result_tbb = histogram_sretch_algorithm_tbb(image, w, h);
+    tbb::tick_count time_finish_alg_tbb = tbb::tick_count::now();
+
+    Matrix hist_res_tbb = make_histogram_tbb(result_tbb, w, h);
+    tbb::tick_count time_make_hist_tbb = tbb::tick_count::now();
+
+    Mat res_tbb_img = Mat(img.rows, img.cols, CV_8UC1);
+    memcpy(res_tbb_img.data, result_tbb.data(), result_tbb.size()*sizeof(unsigned char));
+    namedWindow("result_image_tbb", WINDOW_AUTOSIZE);
+    imshow("result_image_tbb", res_tbb_img);
+    waitKey(0);
+
+    Mat3b res_hist_tbb_image = Mat3b::zeros(256, 256);
+    for(int b = 0; b < 256; b++) {
+        cv::line
+            ( res_hist_tbb_image
+            , cv::Point(b, 256 - hist_res_tbb[b]), cv::Point(b, 256)
+            , cv::Scalar::all(255)
+            );
+    }
+    cv::imshow("stretched_histogram_tbb", res_hist_tbb_image);
+    waitKey(0);
+
+    cv::destroyAllWindows();
+
+    std::cout << "FOR " << h * w << " PIXEL IMAGE" << std::endl;
+    std::cout << "GENERATE IMAGE: " <<
+        (time_generate_image - time_start).seconds() << std::endl;
+    double total_time_seq =
+        (time_finish_alg_seq - time_start_alg_seq).seconds();
+    std::cout << "ALGORITHM SEQ: " << total_time_seq << std::endl;
+    double total_time_tbb =
+        (time_finish_alg_tbb - time_start_alg_tbb).seconds();
+    std::cout << "ALGORITHM TBB: " << total_time_tbb << std::endl;
+    std::cout << "ACCELERATION: " << total_time_seq / total_time_tbb << std::endl;
+
+
+    for (int i = 0; i < h * w; i++) {
+        ASSERT_EQ(result_seq[i], result_tbb[i]);
+    }
+}
+/*
 TEST(Histogram_Stretch, Incorrect_Image) {
     int w = 0, h = 10;
     ASSERT_ANY_THROW(generate_random_image(w, h));
@@ -106,6 +205,7 @@ TEST(Histogram_Stretch, Cannot_Stretch_Twice) {
         ASSERT_EQ(result[i], second_result[i]);
     }
 }
+*/
 /*
 TEST(Histogram_Stretch, Compare_Preprocessing_Seq_And_TBB) {
     int w = 1000, h = 1000;

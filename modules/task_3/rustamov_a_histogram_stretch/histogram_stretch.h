@@ -10,7 +10,7 @@
 
 #include <vector>
 
-using Matrix = std::vector<int>;
+using Matrix = std::vector<unsigned char>;
 
 Matrix generate_random_image(int w, int h, int min_y = 30, int max_y = 192);
 Matrix generate_random_image_tbb(int w, int h, int min_y = 30, int max_y = 192);
