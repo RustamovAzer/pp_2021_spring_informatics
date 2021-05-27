@@ -85,15 +85,15 @@ void part_get_min_max_y(const Matrix& image, int start, int size,
                         std::vector<unsigned char>* min_vec,
                         std::vector<unsigned char>* max_vec, int n) {
     for (size_t i = 0; i < size; i++) {
-        if(image[start + i] < min_vec->at(n))
+        if (image[start + i] < min_vec->at(n))
             min_vec->at(i) = image[start + i];
-        if(image[start + i] > max_vec->at(n))
+        if (image[start + i] > max_vec->at(n))
             max_vec->at(i) = image[start + i];
     }
 }
 
 void get_min_max_y_std(const Matrix& image, const int& h, const int& w,
-                        int& min_y, int& max_y) {
+                        int* min_y, int* max_y) {
     int size = h * w;
     std::vector<int> starts;
     std::vector<int> sizes;
@@ -101,7 +101,7 @@ void get_min_max_y_std(const Matrix& image, const int& h, const int& w,
     int count;
     int rem;
     data_distribution(size, &starts, &sizes, &num_threads, &count, &rem);
-    
+
     std::vector<unsigned char> min_vec(num_threads, 255);
     std::vector<unsigned char> max_vec(num_threads, 0);
 
@@ -112,11 +112,11 @@ void get_min_max_y_std(const Matrix& image, const int& h, const int& w,
                                         image, starts[i], sizes[i],
                                         &min_vec, &max_vec, i));
     }
-    for (auto &t: threads)
+    for (auto &t : threads)
         t.join();
 
-    min_y = *std::min_element(min_vec.begin(), min_vec.end());
-    max_y = *std::max_element(max_vec.begin(), max_vec.end());
+    *min_y = *std::min_element(min_vec.begin(), min_vec.end());
+    *max_y = *std::max_element(max_vec.begin(), max_vec.end());
 }
 
 Matrix stretch_histogram(const Matrix& histogram,
@@ -176,14 +176,14 @@ Matrix increase_contrast_std(const Matrix& image, int w, int h,
     int count;
     int rem;
     data_distribution(size, &starts, &sizes, &num_threads, &count, &rem);
-    
+
     std::vector<std::thread> threads;
 
     for (int i = 0; i < num_threads; i++) {
         threads.push_back(
             std::thread(
                 increase_contrast_part, &image, &result_image,
-                starts[i],sizes[i], min_y, max_y));
+                starts[i], sizes[i], min_y, max_y));
     }
     for (int i = 0; i < num_threads; i++)
         threads[i].join();
@@ -208,6 +208,6 @@ Matrix histogram_sretch_algorithm_std(const Matrix& image,
         throw std::runtime_error("Incorrect input for 'make_histogram'");
     Matrix histogram = make_histogram(image, w, h);
     int min_y, max_y;
-    get_min_max_y_std(image, h, w, min_y, max_y);
+    get_min_max_y_std(image, h, w, &min_y, &max_y);
     return increase_contrast_std(image, w, h, min_y, max_y);
 }

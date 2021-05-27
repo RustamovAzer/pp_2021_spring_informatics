@@ -19,7 +19,7 @@ TEST(Histogram_Stretch, Correct_Stretch_Histogram_Parallel) {
     Matrix hist = make_histogram(image, w, h);
     min_y = get_min_y(hist);
     max_y = get_max_y(hist);
-    
+
     Matrix res_seq = increase_contrast(image, w, h, min_y, max_y);
     Matrix res_std = increase_contrast_std(image, w, h, min_y, max_y);
     for (int i = 0; i < h * w; i++) {
