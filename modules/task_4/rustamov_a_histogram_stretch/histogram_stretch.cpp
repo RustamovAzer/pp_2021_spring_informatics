@@ -2,6 +2,7 @@
 
 #include <random>
 #include <iostream>
+#include <algorithm>
 #include "../../../modules/task_4/rustamov_a_histogram_stretch/histogram_stretch.h"
 #include "../../../3rdparty/unapproved/unapproved.h"
 
@@ -84,7 +85,7 @@ int get_max_y(const Matrix& histogram) {
 void part_get_min_max_y(const Matrix& image, int start, int size,
                         std::vector<unsigned char>* min_vec,
                         std::vector<unsigned char>* max_vec, int n) {
-    for (size_t i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++) {
         if (image[start + i] < min_vec->at(n))
             min_vec->at(i) = image[start + i];
         if (image[start + i] > max_vec->at(n))
@@ -154,7 +155,7 @@ Matrix increase_contrast(const Matrix& image, int w, int h,
 
 void increase_contrast_part(const Matrix* image, Matrix* result,
                             int start, int size, int min_y, int max_y) {
-    for (size_t i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++) {
         result->at(start + i) =
             round(static_cast<double>(255 * (image->at(start + i) - min_y))
                 / static_cast<double>(max_y - min_y));
