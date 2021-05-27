@@ -87,9 +87,9 @@ void part_get_min_max_y(const Matrix& image, int start, int size,
                         std::vector<unsigned char>* max_vec, int n) {
     for (int i = 0; i < size; i++) {
         if (image[start + i] < min_vec->at(n))
-            min_vec->at(i) = image[start + i];
+            min_vec->at(n) = image[start + i];
         if (image[start + i] > max_vec->at(n))
-            max_vec->at(i) = image[start + i];
+            max_vec->at(n) = image[start + i];
     }
 }
 
