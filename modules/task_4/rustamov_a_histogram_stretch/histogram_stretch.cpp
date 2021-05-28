@@ -83,7 +83,6 @@ void get_min_max_y_std(const Matrix& image, const int& h, const int& w,
     for (int i = 0; i < num_threads; i++)
         limits[i] = i * count;
     limits[num_threads] = size;
-
     std::vector<unsigned char> min_vec(num_threads, 255);
     std::vector<unsigned char> max_vec(num_threads, 0);
 
@@ -110,7 +109,6 @@ void get_min_max_y_std(const Matrix& image, const int& h, const int& w,
     }
     for (int i = 0; i < num_threads; i++)
         threads[i].join();
-
     *min_y = *std::min_element(min_vec.begin(), min_vec.end());
     *max_y = *std::max_element(max_vec.begin(), max_vec.end());
 }

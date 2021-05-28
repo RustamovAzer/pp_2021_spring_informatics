@@ -1,5 +1,7 @@
 // Copyright 2021 Kulandin Denis
 #include <limits>
+#include <random>
+#include <set>
 #include "../../../modules/task_1/kulandin_d_matrix_CRS_complex/sparsematrix.h"
 
 bool equalZero(const std::complex<double> & a) {
@@ -53,7 +55,23 @@ int SparseMatrix::getSize() const {
     return size;
 }
 
-std::vector<std::complex<double>> SparseMatrix::createDenseMatrix() const {
+void SparseMatrix::setSize(const int size) {
+    this->size = size;
+}
+
+void SparseMatrix::setValues(const std::vector<std::complex<double>> & val) {
+    values = val;
+}
+
+void SparseMatrix::setCols(const std::vector<int> & col) {
+    cols = col;
+}
+
+void SparseMatrix::setPointers(const std::vector<int> & pointers) {
+    this->pointers = pointers;
+}
+
+std::vector<std::complex<double>> SparseMatrix::getDenseMatrix() const {
     std::vector<std::complex<double>> ans(
         size * size,
         std::complex<double>(0, 0));
@@ -113,7 +131,56 @@ SparseMatrix SparseMatrix::operator*(const SparseMatrix & a) {
                 ans.values.push_back(cur);
             }
         }
-        ans.pointers.push_back(ans.values.size());
+        ans.pointers.push_back(static_cast<int>(ans.values.size()));
+    }
+    return ans;
+}
+
+SparseMatrix generateRandomSparseMatrix(const int size,
+                                        const int nonZeroElementsInEveryRow) {
+    if (nonZeroElementsInEveryRow > size) {
+        throw(std::string)"Wrong input arguments";
+    }
+    std::mt19937 gen;
+    gen.seed(static_cast<unsigned int>(time(0)));
+    SparseMatrix ans;
+    ans.setSize(size);
+    std::vector<std::complex<double>> val;
+    std::vector<int> cols, pointers;
+    pointers.push_back(0);
+    for (int row = 0; row < size; ++row) {
+        std::set<int> generatedCols;
+        while (static_cast<int>(generatedCols.size()) < nonZeroElementsInEveryRow) {
+            generatedCols.insert(gen() % size);
+        }
+        for (auto &i : generatedCols) {
+            cols.push_back(i);
+            val.push_back(std::complex<double>(
+                static_cast<double>(gen()) / std::numeric_limits<int>::max(),
+                static_cast<double>(gen()) / std::numeric_limits<int>::max()));
+        }
+        pointers.push_back(static_cast<int>(cols.size()));
+    }
+    ans.setPointers(pointers);
+    ans.setCols(cols);
+    ans.setValues(val);
+    return ans;
+}
+
+std::vector<std::complex<double>>
+    stupidDenseMultiplication(const std::vector<std::complex<double>> & a,
+                              const std::vector<std::complex<double>> & b,
+                              const int size) {
+    if (a.size() != size * size || b.size() != size * size) {
+        throw(std::string)"Wrong size of matrices";
+    }
+    std::vector<std::complex<double>> ans(size * size);
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            for (int k = 0; k < size; ++k) {
+                ans[i * size + j] += a[i * size + k] * b[k * size + j];
+            }
+        }
     }
     return ans;
 }

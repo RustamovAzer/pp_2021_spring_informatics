@@ -17,7 +17,11 @@ class SparseMatrix {
     std::vector<int> getCols() const;
     std::vector<int> getPointers() const;
     int getSize() const;
-    std::vector<std::complex<double>> createDenseMatrix() const;
+    void setSize(const int size);
+    void setValues(const std::vector<std::complex<double>> & val);
+    void setCols(const std::vector<int> & col);
+    void setPointers(const std::vector<int> & pointers);
+    std::vector<std::complex<double>> getDenseMatrix() const;
     SparseMatrix transposition() const;
  private:
     int size;
@@ -25,4 +29,10 @@ class SparseMatrix {
     std::vector<int> cols, pointers;
 };
 
+SparseMatrix generateRandomSparseMatrix(const int size,
+                                        const int nonZeroElementsInEveryRow);
+std::vector<std::complex<double>>
+   stupidDenseMultiplication(const std::vector<std::complex<double>> & a,
+                             const std::vector<std::complex<double>> & b,
+                             const int size);
 #endif  // MODULES_TASK_1_KULANDIN_D_MATRIX_CRS_COMPLEX_SPARSEMATRIX_H_
