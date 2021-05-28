@@ -31,15 +31,15 @@ void data_distribution(const int data_size, std::vector<int>* starts,
         if (*num_threads > data_size) {
             *num_threads = data_size;
         }
-        *count = data_size / *num_threads;
-        *rem = data_size % *num_threads;
+        *count = data_size / (*num_threads);
+        *rem = data_size % (*num_threads);
         int start = 0;
-        for (int i = 0; i < *num_threads; i++) {
+        for (int i = 0; i < (*num_threads); i++) {
             int size;
-            if (i != *num_threads - 1) {
-                size = *count;
+            if (i != (*num_threads) - 1) {
+                size = (*count);
             } else {
-                size = *count + *rem;
+                size = (*count) + (*rem);
             }
             (*sizes).push_back(size);
             if (i != 0) {
@@ -47,7 +47,8 @@ void data_distribution(const int data_size, std::vector<int>* starts,
             }
             (*starts).push_back(start);
         }
-    }
+}
+
 Matrix make_histogram(const Matrix& image, int w, int h) {
     if ((w <= 0) || (h <= 0))
         throw std::runtime_error("Incorrect input for 'make_histogram'");
@@ -110,7 +111,7 @@ void get_min_max_y_std(const Matrix& image, const int& h, const int& w,
 
     for (int i = 0; i < num_threads; i++) {
         threads.push_back(std::thread(part_get_min_max_y,
-                                        image, starts[i], sizes[i],
+                                        image, starts.at(i), sizes.at(i),
                                         &min_vec, &max_vec, i));
     }
     for (auto &t : threads)
