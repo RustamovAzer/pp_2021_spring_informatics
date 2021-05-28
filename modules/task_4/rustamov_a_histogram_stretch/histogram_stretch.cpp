@@ -74,18 +74,23 @@ int get_max_y(const Matrix& histogram) {
 void get_min_max_y_std(const Matrix& image, const int& h, const int& w,
                         int* min_y, int* max_y) {
     int size = h * w;
-    std::vector<int> limits;
-    int num_threads;
-    int count;
-    data_distribution(size, &limits, &num_threads, &count);
+    int num_threads = std::thread::hardware_concurrency();
+    if (num_threads > size) {
+            num_threads = size;
+    }
+    int count = size / num_threads;
+    std::vector<int> limits(num_threads + 1);
+    for (int i = 0; i < num_threads; i++)
+        limits[i] = i * count;
+    limits[num_threads] = size;
 
     std::vector<unsigned char> min_vec(num_threads, 255);
     std::vector<unsigned char> max_vec(num_threads, 0);
 
     auto part_min_max_y = [&image, &min_vec, &max_vec, &limits]
         (int n) -> void {
-        unsigned char local_min;
-        unsigned char local_max;
+        unsigned char local_min = 255;
+        unsigned char local_max = 0;
         for (int i = limits[n]; i < limits[n + 1]; i++) {
             if (image[i] < local_min) {
                 local_min = image[i];
@@ -152,11 +157,15 @@ Matrix increase_contrast_std(const Matrix& image, int w, int h,
             ("Cannot stretch histohram with provided min_y and max_y");
     int size = h * w;
     Matrix result_image(size);
-    std::vector<int> limits;
-    std::vector<int> sizes;
-    int num_threads;
-    int count;
-    data_distribution(size, &limits, &num_threads, &count);
+    int num_threads = std::thread::hardware_concurrency();
+    if (num_threads > size) {
+            num_threads = size;
+    }
+    int count = size / num_threads;
+    std::vector<int> limits(num_threads + 1);
+    for (int i = 0; i < num_threads; i++)
+        limits[i] = i * count;
+    limits[num_threads] = size;
 
     auto part_increase_contrast = [&image, &result_image,
                                     &limits, &min_y, &max_y]
