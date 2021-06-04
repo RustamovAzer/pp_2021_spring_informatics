@@ -13,7 +13,7 @@
 using namespace cv;
 
 
-TEST(Histogram_Stretch, Show_Stretch_Algorithm) {
+TEST(Histogram_Stretch, Show_Stretch_Algorithm_10000x1000) {
     int w = 10000, h = 1000;
 
     Matrix image = generate_random_image(w, h, 10, 100);
