@@ -10,19 +10,14 @@ using Matrix = std::vector<unsigned char>;
 
 Matrix generate_random_image(int w, int h, int min_y = 30, int max_y = 192);
 
-void data_distribution(const int data_size, std::vector<int>* starts,
-                        std::vector<int>* sizes, int* num_threads,
-                        int* count, int* rem);
+void data_distribution(const int data_size, std::vector<int>* limits,
+                        int* num_threads, int* count);
 
 Matrix make_histogram(const Matrix& image, int w, int h);
 
 int get_min_y(const Matrix& histogram);
 
 int get_max_y(const Matrix& histogram);
-
-void part_get_min_max_y(const Matrix& image, int start, int size,
-                        std::vector<unsigned char>* min_vec,
-                        std::vector<unsigned char>* max_vec, int n);
 
 void get_min_max_y_std(const Matrix& image, const int& h, const int& w,
                         int* min_y, int* max_y);
@@ -32,9 +27,6 @@ Matrix stretch_histogram(const Matrix& histogtram,
 
 Matrix increase_contrast(const Matrix& image, int w, int h,
                             const int& min_y, const int& max_y);
-
-void increase_contrast_part(const Matrix* image, Matrix* result,
-                            int start, int size, int min_y, int max_y);
 
 Matrix increase_contrast_std(const Matrix& image, int w, int h,
                                 const int& min_y, const int& max_y);
